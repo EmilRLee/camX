@@ -15,8 +15,10 @@ app.use(cors());
 
 io.on('connection', (socket) => {
     console.log("got connection")
-
-    socket.on('image', (image) => {
+    socket.on('join', uuid => {
+        socket.join(uuid);
+    })
+    socket.on('image', (image, uuid) => {
         //setInterval(() => {
         io.emit('image', image)
         console.log("sending image");

@@ -3,8 +3,13 @@ import { io } from 'socket.io-client';
 import { Card, CardBody, Button, CardTitle, CardText, CardImg } from 'reactstrap';
 
 export default function Webcams() {
-
+    const uuid = "5d6f3803-11f1-4b7f-8b66-cef174152f97"
     const socket = io('http://localhost:3001')
+    socket.on('connect', () => {
+        socket.emit('join', uuid);
+        console.log(`join room ${uuid}`)
+    })
+    
     socket.on("image", (image) => {
         console.log('recieving image')
         const img = document.getElementById('image');
