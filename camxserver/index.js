@@ -12,15 +12,18 @@ const io = require('socket.io')(server, {
 }});
 app.use(cors());
 
+let customerID = "";
 
 io.on('connection', (socket) => {
     console.log("got connection")
-    socket.on('join', uuid => {
-        socket.join(uuid);
+    socket.on('join', customerId => {
+        socket.join(customerId);
+        console.log(`customer joined room ${customerId}`)
+        customerID = customerId
     })
     socket.on('image', (image, uuid) => {
         //setInterval(() => {
-        io.emit('image', image)
+        io.to(customerID).emit('image', image)
         console.log("sending image");
          //}, 1000 / 60)
     }) 

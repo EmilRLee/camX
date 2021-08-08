@@ -1,7 +1,7 @@
 //const express = require('express');
 const cv = require('opencv4nodejs-prebuilt');
 const io = require('socket.io-client');
-const uuid = "5d6f3803-11f1-4b7f-8b66-cef174152f97"
+const customerId = "5d6f3803-11f1-4b7f-8b66-cef174152f97"
 //const cors = require('cors');
 //const app = express();
 //const port = 3001;
@@ -21,7 +21,7 @@ video.set(cv.CAP_PROP_FRAME_HEIGHT, 500)
 
 socket.on('connect', () => {
    console.log("got connection")
-   socket.emit('join', uuid)
+   socket.emit('join', customerId)
    setInterval(() => {
        const frame = video.read();
        const image = cv.imencode('.jpg', frame).toString('base64');
