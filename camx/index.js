@@ -4,7 +4,7 @@
 //const express = require('express');
 const cv = require('opencv4nodejs-prebuilt');
 const io = require('socket.io-client');
-const hwID = "5d6f3803"
+const hwID = "5d6f3809"
 //const cors = require('cors');
 //const app = express();
 //const port = 3001;
@@ -31,14 +31,14 @@ socket.on('connect', () => {
         const nsp = io.connect(`http://localhost:3001/${customerId}`) 
 
         nsp.on('connect', () => {
-            nsp.emit('join', hwID)
+            nsp.emit('camjoin', hwID)
             console.log(`joined ${hwID} on namespace ${customerId}`)
 
             
             setInterval(async () => {
                 const frame = video.read();
                 const image = cv.imencode('.jpg', frame).toString('base64');
-                await nsp.emit('image', image, hwID,customerId)
+                await nsp.emit('image', image, hwID)
                 console.log(`sending images to room ${hwID} in namespace ${customerId}`); 
             }, 1000 / 15)
         })
