@@ -1,15 +1,20 @@
-import React, {useState} from 'react';
 import Webcams from './Webcams';
-
 
 export default function Main() {
 
-    const [state, setstate] = useState()
-
-    return (
-        <div>
-            <p>hello</p>
-            <Webcams />
-        </div>
-    )
+    
+    if(sessionStorage.getItem('customerId')){
+        return (
+            <div>
+                <p>camX</p>
+                <Webcams />
+            </div>
+        )
+    } else {
+        return(
+            <div>
+                <h1>You need to be logged in to view your camX devices</h1>
+            </div>
+        )
+    }
 }

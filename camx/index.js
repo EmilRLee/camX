@@ -1,7 +1,9 @@
+
+// Developed By: Emil R. Lee  |  ALL Rights Reserved
+
 //const express = require('express');
 const cv = require('opencv4nodejs-prebuilt');
 const io = require('socket.io-client');
-let customerID = "5d6f3803-11f1-4b7f-8b66-cef174152f98";
 const hwID = "5d6f3803"
 //const cors = require('cors');
 //const app = express();
@@ -16,40 +18,31 @@ const hwID = "5d6f3803"
 
 
 
-const socket = io.connect(`http://localhost:3001`,{query: {
-    customer: customerID,
-    hwId: hwID
-  }})
+const socket = io.connect(`http://localhost:3001`)
 const video = new cv.VideoCapture(0)
-video.set(cv.CAP_PROP_FRAME_WIDTH, 500)
-video.set(cv.CAP_PROP_FRAME_HEIGHT, 500)
+//video.set(cv.CAP_PROP_FRAME_WIDTH, 500)
+//video.set(cv.CAP_PROP_FRAME_HEIGHT, 500)
 
 socket.on('connect', () => {
     socket.emit('cam', hwID)
     console.log("sent hwid to server")
 
     socket.on('customer', (customerId) => {
-        const nsp = io.connect(`http://localhost:3001/${customerId}`,{query: {
-            customer: customerID,
-            hwId: hwID
-        }}) 
+        const nsp = io.connect(`http://localhost:3001/${customerId}`) 
 
         nsp.on('connect', () => {
             nsp.emit('join', hwID)
             console.log(`joined ${hwID} on namespace ${customerId}`)
 
             
-            setInterval(() => {
+            setInterval(async () => {
                 const frame = video.read();
                 const image = cv.imencode('.jpg', frame).toString('base64');
-                nsp.emit('image', image, hwID,customerId)
+                await nsp.emit('image', image, hwID,customerId)
                 console.log(`sending images to room ${hwID} in namespace ${customerId}`); 
-            }, 1000 / 100)
+            }, 1000 / 15)
         })
-    })     
-
-    
-    
+    })        
 })
 
 
