@@ -136,24 +136,61 @@ app.get('/login/:username/:password', urlencodedParser, async (req, res) => {
 
 });
 
-app.get('/register/:username/:password', async (req, res) => {
-    console.log(req.body);
+app.get('/checkuser/:username', async (req, res) => {
+    console.log('got checkeuser')
+    const validUser = await User.findOne({"username": req.params.username})
+    if(validUser){
+        res.send({
+            available: false
+        });
+    } else {
+        res.send({
+            available: true
+        });
+    }
+})
+
+app.get('/checkemail/:email', async (req, res) => {
+    console.log('got checkemail')
+    const validUser = await User.findOne({"email": req.params.email})
+    if(validUser){
+        res.send({
+            available: false
+        });
+    } else {
+        res.send({
+            available: true
+        });
+    }
+})
+
+app.get('/register/:fname/:lname/:email/:username/:password', async (req, res) => {
+    
     try{
-        const validUser = await User.findOne({"username": req.params.username})
+        const validUser = await User.findOne({"email": req.params.email})
         if(validUser){
             console.log("Valid User");
-            res.send(`There is a user with the username ${req.params.username} already registered.`);
+            res.send({
+                registered: false
+            });
         } else {
             console.log("Registering User Now");
             console.log(req.params.username);
             req.params.password = Bcrypt.hashSync(req.params.password, 10);
             console.log("encrypt success");
             const user = new User({
+                fname: req.params.fname,
+                lname: req.params.lname,
+                email: req.params.email,
                 username: req.params.username,
-                password: req.params.password
+                password: req.params.password,
+                devices: [],
+                users: []
             });
             await user.save();
-            res.send("Registration Successfull");
+            res.send({
+                registered: true
+            });
         }
     } catch{
         console.log("something went wrong");

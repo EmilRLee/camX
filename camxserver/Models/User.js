@@ -1,6 +1,9 @@
 const mongoose = require('mongoose');
 
 const schema = mongoose.Schema({
+    fname: String,
+    lname: String,
+    email: String,
     username: {
         type: String,
         required: true
@@ -9,8 +12,9 @@ const schema = mongoose.Schema({
         type: String,
         require: true
     },
-    org: String,
-    devices: [String] 
+    devices: Array,
+    users: Array
+
 });
 
 module.exports = mongoose.model("User", schema)
