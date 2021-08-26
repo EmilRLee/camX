@@ -47,8 +47,7 @@ export default class LoginForm extends Component {
                 if(res.data.isvalid === true){
                     console.log(res.data.devices)
                     sessionStorage.setItem("customerId",res.data.customerId)
-                    sessionStorage.setItem("devices", JSON.stringify(res.data.devices))
-                    console.log(`user devices are ${JSON.parse(sessionStorage.getItem("devices"))}`)
+                    //console.log(`user devices are ${this.state.devices}`)
                     console.log(`${sessionStorage.getItem("customerId")} is set as the logged in user`);
                     this.setState({redirect: true});
                 } else {

@@ -5,12 +5,15 @@ import {
   Link
 } from "react-router-dom";
 import './App.css';
-import LoginForm from "./components/LoginForm";
-import Logout from "./components/Logout";
-import Main from './components/Main';
-import SignUp from "./components/Signup";
+import LoginForm from "./pages/LoginForm";
+import Logout from "./pages/auth/Logout";
+import Main from './pages/auth/Main';
+import SignUp from "./pages/Signup";
+import Account from './pages/auth/Account'
+
 
 function App() {
+  const reload = () => window.location.reload();
   return (
     <Router>
         <Switch>
@@ -26,6 +29,10 @@ function App() {
           <Route path="/signup">
             <SignUp />
           </Route>
+          <Route path="/account">
+            <Account />
+          </Route>
+          <Route path="/streams/:hwId" onEnter={reload} />
         </Switch>
     </Router>
   );

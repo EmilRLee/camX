@@ -14,6 +14,7 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 import MailIcon from '@material-ui/icons/Mail';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import MoreIcon from '@material-ui/icons/MoreVert';
+import {Link} from 'react-router-dom';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -121,8 +122,9 @@ export default function CustomAppBar() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-      <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+      
+      <MenuItem onClick={handleMenuClose}><Link to="/account">Add Cameras</Link></MenuItem>
+      <MenuItem onClick={handleMenuClose}><Link to="/logout">Logout</Link></MenuItem>
     </Menu>
   );
 
@@ -137,6 +139,7 @@ export default function CustomAppBar() {
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
+      {/*
       <MenuItem>
         <IconButton aria-label="show 4 new mails" color="inherit">
           <Badge badgeContent={4} color="secondary">
@@ -153,6 +156,7 @@ export default function CustomAppBar() {
         </IconButton>
         <p>Notifications</p>
       </MenuItem>
+      */}
       <MenuItem onClick={handleProfileMenuOpen}>
         <IconButton
           aria-label="account of current user"
@@ -172,20 +176,26 @@ export default function CustomAppBar() {
         
       <AppBar position="static">
         <Toolbar>
+          {/*
           <IconButton
             edge="start"
             className={classes.menuButton}
             color="inherit"
             aria-label="open drawer"
           >
+          
             <MenuIcon />
           </IconButton>
-          <Typography className={classes.title} variant="h6" noWrap>
-            CamX
+          */}
+          <Typography className={classes.title} variant="h4" noWrap>
+            <Link to="/home">Camx</Link>
           </Typography>
+          {/*
           <div className={classes.search}>
             <div className={classes.searchIcon}>
+              
               <SearchIcon />
+              
             </div>
             <InputBase
               placeholder="Search…"
@@ -196,8 +206,10 @@ export default function CustomAppBar() {
               inputProps={{ 'aria-label': 'search' }}
             />
           </div>
+            */}
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
+            {/*
             <IconButton aria-label="show 4 new mails" color="inherit">
               <Badge badgeContent={4} color="secondary">
                 <MailIcon />
@@ -208,6 +220,7 @@ export default function CustomAppBar() {
                 <NotificationsIcon />
               </Badge>
             </IconButton>
+            */}
             <IconButton
               edge="end"
               aria-label="account of current user"

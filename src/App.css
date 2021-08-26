@@ -12,7 +12,15 @@
   top: 30px;
   height: 30px;
 }
+.Modal {
 
+  position: absolute;
+  width: 70%;
+  left: 15%;
+  background-color: white;
+  border: 2px solid #000;
+      
+}
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;

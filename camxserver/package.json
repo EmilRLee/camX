@@ -5,11 +5,22 @@
   "license": "MIT",
   "dependencies": {
     "axios": "^0.21.1",
+    "base-64": "^1.0.0",
     "bcrypt": "^5.0.1",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
     "express": "^4.17.1",
+    "fluent-ffmpeg": "^2.1.2",
+    "js-base64": "^3.6.1",
     "mongoose": "^5.13.6",
-    "socket.io": "^4.1.3"
+    "node-hls-server": "^1.2.1",
+    "node-rtsp-ffmpeg": "^1.0.7",
+    "node-rtsp-stream-jsmpeg": "^0.0.2",
+    "opencv4nodejs-prebuilt": "^5.3.3",
+    "rtsp-live555": "^1.8.7",
+    "rtsp-relay": "^1.5.1",
+    "rtsp-streaming-server": "^2.0.6",
+    "socket.io": "^4.1.3",
+    "uuid": "^8.3.2"
   }
 }

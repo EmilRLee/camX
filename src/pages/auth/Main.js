@@ -1,4 +1,4 @@
-import Webcams from './Webcams';
+import Webcams from '../Webcams';
 
 export default function Main() {
 

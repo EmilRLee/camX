@@ -1,0 +1,12 @@
+{
+  "name": "camxhub",
+  "version": "1.0.0",
+  "description": "camx hub device",
+  "main": "index.js",
+  "author": "Emil R. Lee",
+  "license": "MIT",
+  "dependencies": {
+    "node-onvif": "^0.1.7",
+    "onvif": "^0.6.4"
+  }
+}

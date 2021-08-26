@@ -13,7 +13,8 @@ const schema = mongoose.Schema({
         require: true
     },
     devices: Array,
-    users: Array
+    users: Array,
+    external_cams: Array
 
 });
 
