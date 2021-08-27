@@ -1,7 +1,7 @@
 const express = require('express');
 const fs = require('fs');
 const mongoose = require('mongoose');
-const { exec, spawn } = require('child_process');
+const { spawn, exec } = require('child_process');
 const cv2 = require('opencv4nodejs-prebuilt');
 const Stream = require('node-rtsp-stream-jsmpeg');
 const { v4: uuidv4 } = require('uuid');
@@ -114,17 +114,29 @@ io.on('connection', (socket) => {
         
 
         nsp.on("connection", (socket) => {
-            console.log("got namespace connection from web");
+            console.log("got namespace connection");
 
             socket.on('webjoin', hwId => {
                 const devices = hwId
                 console.log('got webjoin')
-                if(devices !== null) {
+                console.log(hwId)
+                if(devices) {
                     const rooms = devices.map(room => {
                         socket.join(room)
                         console.log(`joining ${customerId} in room ${room}`)
                     })
                 }
+            })
+
+            socket.on('rtspjoin', hwId => {
+                socket.join(hwId)
+                socket.on('rtspimage', (data) => {
+                    //console.log(`got images from device ${hwId}`)
+                    //setInterval(() => {
+                    socket.to(data.hwId).emit('image', data.image, data.hwId)
+                    console.log(`sending images to ${data.hwId} in namespace ${customerId}`);
+                        //}, 1000 / 60)
+                })
             })
 
             socket.on('external_cam_images', async (customerId) => {
@@ -160,12 +172,21 @@ io.on('connection', (socket) => {
                             const hlsserver = await Hls.findOne({"device": `${cam.hwId}`}, (error, hlsserver) =>{
                                 if(hlsserver && hlsserver.isrunning == false) {
                                     
+                                    const rtspclient = exec(`python3`, [`rtspclient.py, --rtsp "${cam.uri}" --hwId "${cam.hwId}" --customerId "${customerId}"`]);
+
+                                    rtspclient.on('start', (err) => {
+                                        // This will be called with err being an AbortError if the controller aborts
+                                        console.log("rtspclient started")
+                                    });
+
+                                    console.log('ran rtspclient')
                                     dir = `./streams/${customerId}/${cam.hwId}/`;
                                     if (!fs.existsSync(dir)){
                                         fs.mkdirSync(dir, {recursive: true});
                                     }
+                                    
                                     console.log("======== setting HLS stream ========")
-
+                                    /*
                                     const command = ffmpeg(cam.uri)
                                         .outputOptions([
                                             '-hls_time 4',

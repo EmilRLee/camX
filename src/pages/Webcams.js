@@ -35,12 +35,18 @@ class Webcams extends Component {
 
     async componentDidMount() {
         const req = await axios.get(`http://localhost:3001/devices/${sessionStorage.getItem('customerId')}`)
-        axios.get(`http://localhost:3001/externalcams/${sessionStorage.getItem('customerId')}`)
-        .then((res) => {
+        const xreq = await axios.get(`http://localhost:3001/externalcams/${sessionStorage.getItem('customerId')}`)
+        
+
+        const xdevices = []
+        const external_devices = xreq.data.map(device =>{
             this.setState({
-                external_cams: res.data
+                external_cams: [...this.state.external_cams, device]
             })
+            xdevices.push(device)
         })
+        
+    
         const devices = req.data
         this.setState({
             devices: devices
@@ -53,6 +59,11 @@ class Webcams extends Component {
             const nsp = io(`http://localhost:3001/${this.state.customerId}`)
             console.log(`joining rooms ${devices}`)
             nsp.emit('webjoin', devices)
+            const xroom = []
+            xdevices.map(device => {
+                xroom.push(device.hwId)
+            })
+            nsp.emit('webjoin', xroom)
             if (sessionStorage.getItem('customerId')){
                 nsp.emit('external_cam_images', sessionStorage.getItem('customerId'))
             }
@@ -62,7 +73,7 @@ class Webcams extends Component {
             nsp.on("image", (image, hwId) => {
                 console.log(`recieving image for ${hwId}`)
                 const img = document.getElementById(hwId);
-                img.src = `data:image/jpeg;base64,${image}`
+                img.src = `data:image/jpeg;base64, ${image}`
             })
 
             nsp.on('external_image',  (image, hwId) => {
@@ -137,6 +148,8 @@ class Webcams extends Component {
                         <Paper>
                         <Card >
                             <CardActionArea>
+                            <img id={device.hwId} top height="300" width="500" />
+                                {/*
                                 <ReactHlsPlayer
                                     src={`http://localhost:3001/streams/${this.state.customerId}/${device.hwId}/${device.hwId}.m3u8`}
                                     autoPlay={true}
@@ -144,6 +157,7 @@ class Webcams extends Component {
                                     width="100%"
                                     height="auto"
                                 />
+                                */}
                                 <CardContent>
                                 <Typography gutterBottom variant="h5" component="h2">
                                     {device.title}
