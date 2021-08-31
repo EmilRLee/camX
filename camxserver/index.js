@@ -103,9 +103,8 @@ app.get('/streams/:customerId/:hwId/:file', (req, res) => {
 
 
 io.on('connection', (socket) => {
-    
 
-    
+
     socket.on('web', (customerId, hwId) => {
         console.log("getting namespace connection for web user")
         //set namespace to customerId
@@ -119,7 +118,7 @@ io.on('connection', (socket) => {
             socket.on('webjoin', hwId => {
                 const devices = hwId
                 console.log('got webjoin')
-                console.log(hwId)
+                
                 if(devices) {
                     const rooms = devices.map(room => {
                         socket.join(room)
@@ -128,15 +127,17 @@ io.on('connection', (socket) => {
                 }
             })
 
-            socket.on('rtspjoin', hwId => {
-                socket.join(hwId)
-                socket.on('rtspimage', (data) => {
-                    //console.log(`got images from device ${hwId}`)
-                    //setInterval(() => {
-                    socket.to(data.hwId).emit('image', data.image, data.hwId)
-                    console.log(`sending images to ${data.hwId} in namespace ${customerId}`);
-                        //}, 1000 / 60)
-                })
+            socket.on('rtspjoin', data => {
+                console.log('got rtspjoin')
+                socket.join(data.hwId)
+            })
+
+            socket.on('rtspimage',(data) => {
+                //console.log(`got images from device ${hwId}`)
+                //setInterval(() => {
+                socket.to(data.hwId).emit('external_image', data.image, data.hwId)
+                //console.log(`sending images to ${data.hwId} in namespace ${customerId}`);
+                    //}, 1000 / 60)
             })
 
             socket.on('external_cam_images', async (customerId) => {
@@ -168,30 +169,23 @@ io.on('connection', (socket) => {
 
 
                         try {
-                            console.log(`trying ${cam.hwId}`)
+                            //console.log(`trying ${cam.hwId}`)
                             const hlsserver = await Hls.findOne({"device": `${cam.hwId}`}, (error, hlsserver) =>{
-                                if(hlsserver && hlsserver.isrunning == false) {
+                                if(hlsserver) {
                                     
-                                    const rtspclient = exec(`python3`, [`rtspclient.py, --rtsp "${cam.uri}" --hwId "${cam.hwId}" --customerId "${customerId}"`]);
-
-                                    rtspclient.on('start', (err) => {
-                                        // This will be called with err being an AbortError if the controller aborts
-                                        console.log("rtspclient started")
-                                    });
-
-                                    console.log('ran rtspclient')
+                                    //Creates directories for video
                                     dir = `./streams/${customerId}/${cam.hwId}/`;
                                     if (!fs.existsSync(dir)){
                                         fs.mkdirSync(dir, {recursive: true});
                                     }
                                     
-                                    console.log("======== setting HLS stream ========")
+                                    console.log("======== setting HLS stream Directories ========")
                                     /*
                                     const command = ffmpeg(cam.uri)
                                         .outputOptions([
-                                            '-hls_time 4',
+                                            '-hls_time 5',
                                             '-hls_playlist_type event',
-                                            '-hls_list_size 6',
+                                            '-hls_list_size 10',
                                             '-hls_wrap 7',
                                             '-live_start_index 5'
                                         ])
@@ -241,7 +235,7 @@ io.on('connection', (socket) => {
                                     console.log(`set device ${cam.hwId} to running`)
                                 }
                             })
-                            console.log(hlsserver)
+                            //console.log(hlsserver)
                         
                             
                             
@@ -305,7 +299,7 @@ io.on('connection', (socket) => {
                         //console.log(`got images from device ${hwId}`)
                         //setInterval(() => {
                         socket.to(hwId).emit('image', image, hwId)
-                        console.log(`sending images to ${hwId} in namespace ${customerId}`);
+                        //console.log(`sending images to ${hwId} in namespace ${customerId}`);
                             //}, 1000 / 60)
                     })
                 })

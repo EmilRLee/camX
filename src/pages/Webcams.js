@@ -6,6 +6,7 @@ import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
+import Link from '@material-ui/core/Link';
 
 import axios from 'axios';
 import {CardMedia, Grid, Paper, Modal} from '@material-ui/core/';
@@ -31,6 +32,7 @@ class Webcams extends Component {
         this.getExternalCams = this.getExternalCams.bind(this);
         this.openModal = this.openModal.bind(this);
         this.closeModal = this.closeModal.bind(this);
+        this.checkDevices = this.checkDevices.bind(this);
     }
 
     async componentDidMount() {
@@ -65,6 +67,7 @@ class Webcams extends Component {
             })
             nsp.emit('webjoin', xroom)
             if (sessionStorage.getItem('customerId')){
+                console.log(`joining rooms ${xroom}`)
                 nsp.emit('external_cam_images', sessionStorage.getItem('customerId'))
             }
             //axios.get(`http://localhost:3001/stream/${this.state.customerId}`)
@@ -148,8 +151,6 @@ class Webcams extends Component {
                         <Paper>
                         <Card >
                             <CardActionArea>
-                            <img id={device.hwId} top height="300" width="500" />
-                                {/*
                                 <ReactHlsPlayer
                                     src={`http://localhost:3001/streams/${this.state.customerId}/${device.hwId}/${device.hwId}.m3u8`}
                                     autoPlay={true}
@@ -157,7 +158,6 @@ class Webcams extends Component {
                                     width="100%"
                                     height="auto"
                                 />
-                                */}
                                 <CardContent>
                                 <Typography gutterBottom variant="h5" component="h2">
                                     {device.title}
@@ -192,6 +192,12 @@ class Webcams extends Component {
         })
     }
 
+    checkDevices(){
+        if(!this.state.devices || !this.state.external_cams){
+            return <h1>No Cameras of Devices... <Link href="/account">Add Camera</Link></h1>
+        }
+    }
+
     render() {
         
         const classes = {
@@ -205,7 +211,7 @@ class Webcams extends Component {
         return (
             <div>
                 <CustomAppBar />
-                
+                {this.checkDevices()}
                 <Grid container justifyContent="center" spacing={2}>
                     {this.getStreams()}
                     {this.getExternalCams()}
